@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary Data to Image and Image to Binary Data Converter</title>
+    <style>
+        /* Styles for smooth animations */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000; /* Black background */
+            color: #fff; /* White text */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 150vh;
+        }
+        .container {
+            background-color: #222; /* Dark gray background */
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            max-width: 600px;
+            width: 90%;
+            margin-bottom: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #fff; /* White text */
+            margin-bottom: 30px;
+        }
+        input[type="file"], textarea {
+            background-color: #333; /* Dark gray background */
+            color: #fff; /* White text */
+            border: 1px solid #444; /* Dark gray border */
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 20px;
+            width: calc(100% - 22px);
+        }
+        button {
+            background-color: #444; /* Dark gray button */
+            color: #fff; /* White text */
+            border: none;
+            border-radius: 5px;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            width: calc(100% - 22px);
+            margin-bottom: 20px;
+        }
+        button:hover {
+            background-color: #555; /* Slightly lighter gray on hover */
+        }
+        #resultContainer {
+            background-color: #222; /* Dark gray background */
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 600px;
+            width: auto;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+        }
+        #resultContainer img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+            overflow: visible;
+        }
+        #resultContainer p {
+            margin: 0;
+            padding: 0;
+            color: #fff; /* White text */
+            font-size: 16px;
+            word-break: break-all;
+        }
+        #copyButton {
+            background-color: #444; /* Dark gray button */
+            color: #fff; /* White text */
+            border: none;
+            margin-top: 0%;
+            border-radius: 5px;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 200px;
+            transition: background-color 0.3s;
+        }
+        #copyButton:hover {
+            background-color: #555; /* Slightly lighter gray on hover */
+        }
+    </style>
+</head>
+<body><br>
+    <div class="container">
+        <h1>Binary Data to Image and Image to Binary Data Converter</h1>
+        <input type="file" id="imageInput" accept="image/*">
+        <button onclick="convertImageToBinary()">Convert Image to Binary</button>
+    </div>
+    <div class="container">
+        <textarea id="binaryInput" placeholder="Paste or type binary data here" rows="4"></textarea>
+        <button onclick="convertBinaryToImage()">Convert Binary to Image</button>
+    </div>
+    <button id="copyButton" onclick="copyResultData()">Copy</button>
+
+    <div id="resultContainer">
+        <p>Result will be displayed here</p>
+    </div>
+
+    <script>
+        function convertImageToBinary() {
+            const input = document.getElementById('imageInput');
+            const file = input.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function(event) {
+                    const binaryData = event.target.result;
+                    displayResult(binaryData);
+                };
+
+                reader.readAsDataURL(file);
+            } else {
+                alert('Please select an image file.');
+            }
+        }
+
+        function displayResult(data) {
+            const resultContainer = document.getElementById('resultContainer');
+            resultContainer.innerHTML = ''; // Clear previous result
+
+            const resultElement = document.createElement('p');
+            resultElement.textContent = data;
+
+            resultContainer.appendChild(resultElement);
+
+            const copyButton = document.createElement('button');
+            copyButton.textContent = 'Copy';
+            copyButton.id = 'copyButton';
+            copyButton.onclick = copyResultData;
+
+            resultContainer.appendChild(copyButton);
+        }
+
+        function convertBinaryToImage() {
+            const resultContainer = document.getElementById('resultContainer');
+            const binaryInput = document.getElementById('binaryInput');
+            const binaryData = binaryInput.value.trim();
+
+            if (binaryData) {
+                const imgElement = document.createElement('img');
+                imgElement.src = binaryData;
+
+                resultContainer.innerHTML = ''; // Clear previous result
+                resultContainer.appendChild(imgElement);
+            } else {
+                alert('Please enter binary data.');
+            }
+        }
+
+        function copyBinaryData() {
+            const binaryInput = document.getElementById('binaryInput');
+            binaryInput.select();
+            document.execCommand('copy');
+            alert('Binary data copied to clipboard.');
+        }
+
+        function copyResultData() {
+            const resultContainer = document.getElementById('resultContainer');
+            const resultText = resultContainer.querySelector('p').textContent;
+
+            const textarea = document.createElement('textarea');
+            textarea.value = resultText;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert('Result copied to clipboard.');
+        }
+    </script>
+</body>
+</html>
